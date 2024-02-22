@@ -34,7 +34,7 @@ export function RevenueChart() {
           <CardTitle className="text-base font-medium">
             Receita no período
           </CardTitle>
-          <CardDescription>Receite diária no período</CardDescription>
+          <CardDescription>Receita diária no período</CardDescription>
         </div>
       </CardHeader>
 
