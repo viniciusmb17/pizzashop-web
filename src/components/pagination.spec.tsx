@@ -4,9 +4,12 @@ import { userEvent } from "@testing-library/user-event"
 
 const onPageChangeCallback = vi.fn()
 describe('Pagination', () => {
+  beforeEach(() => {
+    onPageChangeCallback.mockClear()
+  })
   
   it('should display the right amount of pages and results', () => {
-    const wrapper = render(<Pagination totalCount={200} perPage={10} pageIndex={0} onPageChange={() => {}} />)
+    const wrapper = render(<Pagination totalCount={200} perPage={10} pageIndex={0} onPageChange={onPageChangeCallback} />)
 
     expect(wrapper.getByText('Página 1 de 20')).toBeInTheDocument()
     expect(wrapper.getByText('Total de 200 item(s)')).toBeInTheDocument()
@@ -25,4 +28,48 @@ describe('Pagination', () => {
 
     expect(onPageChangeCallback).toHaveBeenCalledWith(1)
   })
+
+  it('should be able to navigate to the previous page', async () => {
+    const wrapper = render(<Pagination totalCount={200} perPage={10} pageIndex={5} onPageChange={onPageChangeCallback} />)
+
+    const previousPageButton = wrapper.getByRole('button', {  
+      name: "Página anterior"
+    })
+
+    const user = userEvent.setup()
+
+    await user.click(previousPageButton)
+
+    expect(onPageChangeCallback).toHaveBeenCalledWith(4)
+  })
+
+  it('should be able to navigate to the first page', async () => {
+    const wrapper = render(<Pagination totalCount={200} perPage={10} pageIndex={5} onPageChange={onPageChangeCallback} />)
+
+    const firstPageButton = wrapper.getByRole('button', {  
+      name: "Primeira página"
+    })
+
+    const user = userEvent.setup()
+
+    await user.click(firstPageButton)
+
+    expect(onPageChangeCallback).toHaveBeenCalledWith(0)
+  })
+  
+
+  it('should be able to navigate to the last page', async () => {
+    const wrapper = render(<Pagination totalCount={200} perPage={10} pageIndex={0} onPageChange={onPageChangeCallback} />)
+
+    const lastPageButton = wrapper.getByRole('button', {  
+      name: "Última página"
+    })
+
+    const user = userEvent.setup()
+
+    await user.click(lastPageButton)
+
+    expect(onPageChangeCallback).toHaveBeenCalledWith(19)
+  })
+
 })
